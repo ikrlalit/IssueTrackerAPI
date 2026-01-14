@@ -142,3 +142,26 @@ async def import_issues_f(
         content
     )
     return {"message": "Issues imported successfully"}
+
+@router.get(
+    "/reports/top-assignees",
+    response_model=list[TopAssigneeReport]
+)
+async def top_assignees(
+    request: Request,
+    limit: int = Query(5, le=20)
+):
+    return await get_top_assignees(
+        request.app.state.pool,
+        limit
+    )
+
+
+@router.get(
+    "/reports/latency",
+    response_model=LatencyReport
+)
+async def latency_report(request: Request):
+    return await get_latency_report(
+        request.app.state.pool
+    )

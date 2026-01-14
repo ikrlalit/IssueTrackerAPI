@@ -46,3 +46,11 @@ class LabelReplace(BaseModel):
 class BulkStatusUpdate(BaseModel):
     issue_ids: List[int]
     status: str
+
+class TopAssigneeReport(BaseModel):
+    assignee_id: int
+    username: str
+    total_issues: int
+
+class LatencyReport(BaseModel):
+    average_resolution_hours: Optional[float]

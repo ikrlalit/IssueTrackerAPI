@@ -154,3 +154,39 @@ async def import_issues_q(pool, file_content: str):
                     row.get("priority"),
                     row.get("status", "OPEN")
                 )
+
+# -------- TOP ASSIGNEES REPORT --------
+async def get_top_assignees(pool, limit: int = 5):
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            """
+            SELECT
+                u.id AS assignee_id,
+                u.username,
+                COUNT(i.id) AS total_issues
+            FROM issues i
+            JOIN users u ON u.id = i.assignee_id
+            GROUP BY u.id, u.username
+            ORDER BY total_issues DESC
+            LIMIT $1
+            """,
+            limit
+        )
+        return serialize_response(rows)
+    
+
+# -------- LATENCY REPORT --------
+async def get_latency_report(pool):
+    async with pool.acquire() as conn:
+        record = await conn.fetchrow(
+            """
+            SELECT
+                ROUND(
+                    AVG(EXTRACT(EPOCH FROM (updated_at - created_at)) / 3600),
+                    2
+                ) AS average_resolution_hours
+            FROM issues
+            WHERE status = 'CLOSED'
+            """
+        )
+        return serialize_response(record)
