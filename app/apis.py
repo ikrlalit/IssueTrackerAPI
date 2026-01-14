@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, HTTPException, Query
+from fastapi import APIRouter, Request, HTTPException, Query,UploadFile, File
 from asyncpg.exceptions import UniqueViolationError
 from app.schemas import *
 from app.queries import *
@@ -83,3 +83,62 @@ async def update_issue_f(
         )
 
     return issue
+
+
+
+@router.post("/issues/{id}/comments")
+async def add_comment_f(
+    id: int,
+    payload: CommentCreate,
+    request: Request
+):
+    comment = await add_comment_q(
+        request.app.state.pool,
+        id,
+        payload.user_id,
+        payload.content
+    )
+    if not comment:
+        raise HTTPException(status_code=404, detail="Issue not found")
+    return comment
+
+# ---------------- REPLACE LABELS ----------------
+@router.put("/issues/{id}/labels")
+async def replace_labels_f(
+    id: int,
+    payload: LabelReplace,
+    request: Request
+):
+    result = await replace_labels_q(
+        request.app.state.pool,
+        id,
+        payload.label_ids
+    )
+    if not result:
+        raise HTTPException(status_code=404, detail="Issue not found")
+    return {"message": "Labels replaced successfully"}
+
+# ---------------- BULK STATUS ----------------
+@router.post("/issues/bulk-status")
+async def bulk_status_f(
+    payload: BulkStatusUpdate,
+    request: Request
+):
+    return await bulk_update_status_q(
+        request.app.state.pool,
+        payload.issue_ids,
+        payload.status
+    )
+
+# ---------------- CSV IMPORT ----------------
+@router.post("/issues/import")
+async def import_issues_f(
+    request: Request,
+    file: UploadFile = File(...)
+):
+    content = (await file.read()).decode("utf-8")
+    await import_issues_q(
+        request.app.state.pool,
+        content
+    )
+    return {"message": "Issues imported successfully"}

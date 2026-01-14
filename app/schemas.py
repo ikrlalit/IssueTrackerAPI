@@ -34,3 +34,15 @@ class IssueResponse(BaseModel):
     priority: Optional[str]
     version: int
     created_at: datetime
+
+
+class CommentCreate(BaseModel):
+    content: str
+    user_id: int
+
+class LabelReplace(BaseModel):
+    label_ids: List[int]
+
+class BulkStatusUpdate(BaseModel):
+    issue_ids: List[int]
+    status: str
