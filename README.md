@@ -39,11 +39,11 @@ A **production-grade Issue Tracking backend** built with **FastAPI**, **PostgreS
 ISSUETRAKERAPI/
 ├── app/
 │   ├── apis.py           # API route definitions
-│   ├── queries_async.py  # Optimized Raw SQL queries
-│   ├── db_async.py       # Async DB connection pooling
+│   ├── db.py             # Async DB connection pooling  
+│   ├── helper.py         # Contains helper function used
 │   ├── schemas.py        # Pydantic request/response models
-│   └── utils/
-│       └── response.py   # Standardized JSON serialization
+│   └── queries.py   # Optimized Raw SQL queries
+│ 
 ├── main.py               # Application entry point
 └── README.md
 
