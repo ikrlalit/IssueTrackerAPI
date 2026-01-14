@@ -92,11 +92,34 @@ Follow these steps to set up the environment and run the **Issue Tracker API** l
 ```bash
 git clone [https://github.com/ikrlalit/IssueTrackerAPI.git](https://github.com/ikrlalit/IssueTrackerAPI.git)
 ```
-Next move to project directory -
+Next, move to project directory -
 ```bash
 cd IssueTrackerAPI
 ```
-
-
-
-
+Setup Python virtual environment -
+```bash
+python -m venv .venv
+```
+Activate environement using -
+- Windows
+```bash
+.venv\Scripts\activate
+```
+- Linux/MacOS
+```bash
+source .venv/bin/activate
+```
+Install required dependencies- 
+```bash
+pip install -r requirements.txt
+```
+### 3. Execution
+Run the FastAPI application:
+```bash
+uvicorn main:app --reload
+```
+#### 4. API Documentation
+Once the application server starts successfully, go to the link below to access the Swagger UI and interact with the APIs:
+```bash
+http://localhost:8000/docs
+```
